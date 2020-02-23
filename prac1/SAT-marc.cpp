@@ -49,16 +49,16 @@ void readClauses( ){
 
 
 
-int currentValueInModel(int lit){
+int currentValueInModel(int lit){   //DONT TOUCH
   if (lit >= 0) return model[lit];
   else {
-    if (model[-lit] == UNDEF) return UNDEF;
-    else return 1 - model[-lit];
+    if (model[-lit] == UNDEF) return UNDEF; //se mira desde la vista del negado
+    else return 1 - model[-lit];  //opuesto a su negativo
   }
 }
 
 
-void setLiteralToTrue(int lit){
+void setLiteralToTrue(int lit){   //DONT TOUCH
   modelStack.push_back(lit);
   if (lit > 0) model[lit] = TRUE;
   else model[-lit] = FALSE;		

@@ -68,7 +68,10 @@ void setLiteralToTrue(int lit){   //DONT TOUCH
 bool propagateGivesConflict ( ) {
   while ( indexOfNextLitToPropagate < modelStack.size() ) {
     ++indexOfNextLitToPropagate;
-    for (uint i = 0; i < numClauses; ++i) {
+
+    int firstPila = modelStack.back();  //solo cogemos este
+
+    for (uint i = 0; i < numClauses; ++i) { //itermaos solo en la lista del firstPila...
       bool someLitTrue = false;
       int numUndefs = 0;
       int lastLitUndef = 0;

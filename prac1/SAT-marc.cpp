@@ -31,9 +31,7 @@ void readClauses( ){
   string aux;
   cin >> aux >> numVars >> numClauses;
   clauses.resize(numClauses);
-
   occurLists.resize(numVars+1);
-  cout << occurLists.size() << endl;
 
   // Read clauses
   for (uint i = 0; i < numClauses; ++i) {
@@ -41,8 +39,13 @@ void readClauses( ){
     while (cin >> lit and lit != 0) {
       clauses[i].push_back(lit);
 
-      if (lit < 0) occurLists[abs(lit)].first.push_back(i);
-      else occurLists[abs(lit)].second.push_back(i);
+      if (lit < 0) {
+        occurLists[-lit].first.push_back(i);
+      }
+      else {
+        occurLists[lit].second.push_back(i);
+      }
+
     }
   }
 }
@@ -67,14 +70,21 @@ void setLiteralToTrue(int lit){   //DONT TOUCH
 
 bool propagateGivesConflict ( ) {
   while ( indexOfNextLitToPropagate < modelStack.size() ) {
+    
+    int topStack = modelStack[indexOfNextLitToPropagate];
+    vector <int> *topClauses;
+    if (topStack > 0) topClauses = &occurLists[topStack].first;
+    else topClauses = &occurLists[-topStack].second;
+
     ++indexOfNextLitToPropagate;
 
-    int firstPila = modelStack.back();  //solo cogemos este
-
-    for (uint i = 0; i < numClauses; ++i) { //itermaos solo en la lista del firstPila...
+    for (uint j = 0; j < topClauses->size(); ++j) { //itermaos solo en las listas del firstPila...
+      int i = topClauses->at(j);
+      
       bool someLitTrue = false;
       int numUndefs = 0;
       int lastLitUndef = 0;
+
       for (uint k = 0; not someLitTrue and k < clauses[i].size(); ++k){
         int val = currentValueInModel(clauses[i][k]);
         if (val == TRUE) someLitTrue = true;

@@ -26,25 +26,25 @@ void readClauses( ){
   while (c == 'c') {
     while (c != '\n') c = cin.get();
     c = cin.get();
-  }  
+  }
   // Read "cnf numVars numClauses"
   string aux;
   cin >> aux >> numVars >> numClauses;
-  clauses.resize(numClauses);  
-  
+  clauses.resize(numClauses);
+
   occurLists.resize(numVars+1);
   cout << occurLists.size() << endl;
-  
+
   // Read clauses
   for (uint i = 0; i < numClauses; ++i) {
     int lit;
     while (cin >> lit and lit != 0) {
-        clauses[i].push_back(lit);
-    
-        if (lit < 0) occurLists[abs(lit)].first.push_back(i);
-        else occurLists[abs(lit)].second.push_back(i);
+      clauses[i].push_back(lit);
+
+      if (lit < 0) occurLists[abs(lit)].first.push_back(i);
+      else occurLists[abs(lit)].second.push_back(i);
     }
-  }    
+  }
 }
 
 
@@ -61,7 +61,7 @@ int currentValueInModel(int lit){   //DONT TOUCH
 void setLiteralToTrue(int lit){   //DONT TOUCH
   modelStack.push_back(lit);
   if (lit > 0) model[lit] = TRUE;
-  else model[-lit] = FALSE;		
+  else model[-lit] = FALSE;
 }
 
 
@@ -76,10 +76,10 @@ bool propagateGivesConflict ( ) {
         int val = currentValueInModel(clauses[i][k]);
         if (val == TRUE) someLitTrue = true;
         else if (val == UNDEF){ ++numUndefs; lastLitUndef = clauses[i][k]; }
-        }
-        if (not someLitTrue and numUndefs == 0) return true; // conflict! all lits false
-        else if (not someLitTrue and numUndefs == 1) setLiteralToTrue(lastLitUndef);	
-        }    
+      }
+      if (not someLitTrue and numUndefs == 0) return true; // conflict! all lits false
+      else if (not someLitTrue and numUndefs == 1) setLiteralToTrue(lastLitUndef);
+    }
   }
   return false;
 }
@@ -104,40 +104,47 @@ void backtrack(){
 
 // Heuristic for finding the next decision literal:
 int getNextDecisionLiteral(){
-  for (uint i = 1; i <= numVars; ++i) // stupid heuristic:
-    if (model[i] == UNDEF) return i;  // returns first UNDEF var, positively
-  return 0; // reurns 0 when all literals are defined
+  int maxSize = 0;
+  int maxVar = 0;
+  for (uint i = 1; i <= numVars; ++i) {
+    int minSize = min(occurLists[i].first.size(),occurLists[i].second.size());
+    if (model[i] == UNDEF and minSize > maxSize) {
+      maxSize = minSize;
+      maxVar = i;
+    }
+  }
+  return maxVar; // reurns 0 when all literals are defined
 }
 
 void checkmodel(){
   for (uint i = 0; i < numClauses; ++i){
     bool someTrue = false;
     for (uint j = 0; not someTrue and j < clauses[i].size(); ++j)
-      someTrue = (currentValueInModel(clauses[i][j]) == TRUE);
+    someTrue = (currentValueInModel(clauses[i][j]) == TRUE);
     if (not someTrue) {
       cout << "Error in model, clause is not satisfied:";
       for (uint j = 0; j < clauses[i].size(); ++j) cout << clauses[i][j] << " ";
       cout << endl;
       exit(1);
     }
-  }  
+  }
 }
 
-int main(){ 
+int main(){
   readClauses(); // reads numVars, numClauses and clauses
   model.resize(numVars+1,UNDEF);
-  indexOfNextLitToPropagate = 0;  
+  indexOfNextLitToPropagate = 0;
   decisionLevel = 0;
-  
+
   // Take care of initial unit clauses, if any
   for (uint i = 0; i < numClauses; ++i)
-    if (clauses[i].size() == 1) {
-      int lit = clauses[i][0];
-      int val = currentValueInModel(lit);
-      if (val == FALSE) {cout << "UNSATISFIABLE" << endl; return 10;}
-      else if (val == UNDEF) setLiteralToTrue(lit);
-    }
-  
+  if (clauses[i].size() == 1) {
+    int lit = clauses[i][0];
+    int val = currentValueInModel(lit);
+    if (val == FALSE) {cout << "UNSATISFIABLE" << endl; return 10;}
+    else if (val == UNDEF) setLiteralToTrue(lit);
+  }
+
   // DPLL algorithm
   while (true) {
     while ( propagateGivesConflict() ) {
@@ -152,4 +159,4 @@ int main(){
     ++decisionLevel;
     setLiteralToTrue(decisionLit);    // now push decisionLit on top of the mark
   }
-}  
+}

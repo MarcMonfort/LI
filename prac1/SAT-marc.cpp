@@ -21,7 +21,11 @@ vector<pair<vector<int>,vector<int>>> occurLists;
 vector<int> numConflict;
 int timeConflict = 0;
 
+//constants
 const int time_reset = 1000;
+const int inc_conflict = 1;
+const float factor_reset = 0.5;
+
 
 
 
@@ -56,7 +60,6 @@ void readClauses( ){
 
 	// new heuristic
 	numConflict.resize(numVars+1,0);
-
 
 	for (uint i = 1; i <= numVars; ++i) {
 		//cout << i << endl;
@@ -108,13 +111,13 @@ bool propagateGivesConflict ( ) {
 			if (not someLitTrue and numUndefs == 0){
 				if (timeConflict==time_reset) {
 					for (uint z = 1; z <= numVars; ++z){
-						numConflict[z] /= 2;
+						numConflict[z] *= factor_reset;
 					}
 					timeConflict = 0;
 				}
 				++timeConflict;
 				for (uint k = 0; k < clauses[i].size(); ++k){
-					++numConflict[abs(clauses[i][k])];
+					numConflict[abs(clauses[i][k])] += inc_conflict;
 
 				}
 
@@ -172,6 +175,7 @@ void checkmodel(){
 }
 
 int main(){
+
 	readClauses(); // reads numVars, numClauses and clauses
 	model.resize(numVars+1,UNDEF);
 	indexOfNextLitToPropagate = 0;

@@ -7,3 +7,6 @@ $(file): $(file).pl
 
 miLiga:	miLiga.pl
 		swipl -q -O -g main --stand_alone=true -o miLiga -c miLiga.pl
+
+miHorari: miHorari.pl
+		swipl -q -O -g main --stand_alone=true -o miHorari -c miHorari.pl

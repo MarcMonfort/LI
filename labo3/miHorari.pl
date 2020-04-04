@@ -4,82 +4,67 @@ Problema 2: planificación del horario semanal de la FIB: cinco dı́as de 8 a 2
 - En los datos de entrada se indican las listas de aulas, profesores, y cursos que hay.
 - Todos ellos reciben un natural no nulo como identificador.
 
-- Por cada curso se da su lista de asignaturas,
-  cada una con su número de horas semanales de clase (máximo una al dı́a),
+OK - Por cada curso se da su lista de asignaturas,
+  cada una con su número de horas semanales de clase OK(máximo una al dı́a),
   la lista de aulas adecuadas para ella,
   y la lista de profesores que la podrı́an impartir.
 
-- Todas las sesiones de una misma asignatura deben impartirse en la misma aula por el mismo profesor.
-- Por cada profesor se indican las horas (con un entero entre 1 y 60) en que no puede dar clase.
-- Por supuesto, no puede haber más de una clase a la vez por profesor ni por aula.
+OK - Todas las sesiones de una misma asignatura deben impartirse en la misma aula por el mismo profesor.
+OK - Por cada profesor se indican las horas (con un entero entre 1 y 60) en que no puede dar clase.
+OK - Por supuesto, no puede haber más de una clase a la vez por profesor ni por aula.
 
 - Cada curso ha de tener un horario compacto (sin horas libres entre dos clases el mismo dı́a)
   y no más de seis horas de clase al dı́a.
-- Sesiones de un mismo curso no pueden solaparse en el tiempo.
+OK - Sesiones de un mismo curso no pueden solaparse en el tiempo.
 
 Ayuda: es mejor introducir diversos tipos de variables que relacionan dos entidades
        (profesor-asignatura, asignatura-hora, etc.) que tener variables que relacionan más de dos.
 Hay que mostrar la solución por horas (cada hora qué hay) y despúes de cada curso (qué clases tiene).
     miEj: hora 1 -> curso1-assignatura1-aula1-profesor-1 // curso2-...
 */
-/*
-% Entrada
+
+%ENTRADA
+
 numCursos(4).
 numAssignatures(23).
 numAules(3).
 numProfes(5).
 
 % Sintaxi: assig(curs,assignatura,hores,llistaAules,llistaProfessors).
-assig(1,1,2,[1,2,3],[1,3]).
-assig(1,2,2,[2,3],[5]).
-assig(1,3,4,[2,3],[1,3,4,5]).
-assig(1,4,3,[1],[1,2,4,5]).
-assig(1,5,3,[1,2,3],[1,2,3,4,5]).
+assig(1,1,4,[1,2,3],[1,2,3,4,5]).
+assig(1,2,2,[2],[3,4]).
+assig(1,3,2,[1,3],[1,3,4]).
+assig(1,4,2,[1,3],[1,2,3,4,5]).
+assig(1,5,3,[2],[1,3]).
 
-assig(2,6,3,[3],[1,3,5]).
-assig(2,7,3,[1,2,3],[3,4,5]).
-assig(2,8,4,[2,3],[3,4]).
-assig(2,9,3,[2],[1,2,3,5]).
-assig(2,10,3,[1,2,3],[4,5]).
-assig(2,11,2,[1,3],[1,3,5]).
+assig(2,6,4,[3],[2]).
+assig(2,7,2,[1,3],[4]).
+assig(2,8,3,[1,2,3],[2,3,4,5]).
+assig(2,9,3,[1,3],[1,2,3,4,5]).
+assig(2,10,4,[2],[1,2,3,5]).
 
-assig(3,12,3,[1,3],[1,3,4,5]).
-assig(3,13,4,[1,2],[1,3,5]).
-assig(3,14,2,[1,2,3],[1,2,4,5]).
-assig(3,15,4,[3],[1,2,3]).
-assig(3,16,3,[1,2,3],[2,5]).
-assig(3,17,3,[1,2,3],[1]).
-assig(3,18,3,[1,2,3],[3]).
+assig(3,11,2,[1,2,3],[1,4]).
+assig(3,12,3,[2,3],[1,2,3,4]).
+assig(3,13,4,[2],[2,5]).
+assig(3,14,3,[1],[1,2,3,4]).
+assig(3,15,2,[1,2,3],[1,2,4,5]).
+assig(3,16,4,[2],[1,3]).
 
-assig(4,19,4,[1,2,3],[3]).
-assig(4,20,4,[3],[1,3,4,5]).
-assig(4,21,3,[2,3],[2,3]).
-assig(4,22,2,[2,3],[2,3,4,5]).
-assig(4,23,4,[1],[3]).
+assig(4,17,4,[1,2,3],[2]).
+assig(4,18,2,[1,3],[2]).
+assig(4,19,2,[1,3],[1,3]).
+assig(4,20,4,[1,2,3],[2,3,4,5]).
+assig(4,21,3,[1,2,3],[1,3]).
+assig(4,22,4,[3],[1,3,4,5]).
+assig(4,23,4,[2,3],[2]).
 
 % Sintaxi: horesProhibides(professor,llistaHores).
-horesProhibides(1,[4,7,12,15,16,18,26,29,30,37,38,45,50,54]).
-horesProhibides(2,[1,5,6,9,11,13,17,20,25,29,30,32,33,37,38,42,44,49,50,55,57]).
-horesProhibides(3,[5,7,8,10,21,22,25,34,38,39,60]).
-horesProhibides(4,[4,9,10,14,17,20,21,22,24,25,27,31,33,38,39,41,42,43,47,55,57]).
-horesProhibides(5,[2,20,26,27,30,31,44,53,56,58]).*/
+horesProhibides(1,[5,8,9,14,21,22,24,26,30,31,41,55,56]).
+horesProhibides(2,[5,7,8,9,12,15,19,20,25,26,27,29,31,33,37,38,42,46,50,55,58,60]).
+horesProhibides(3,[10,14,20,23,26,32,37,39,40,43,44,53,55]).
+horesProhibides(4,[2,7,14,16,19,23,24,31,32,34,40,42,45,47,48,49,50,51,53,54,56,58,59]).
+horesProhibides(5,[7,10,11,12,15,20,22,25,27,34,37,39,41,42,46,49,51,52,60]).
 
-
-%Mi entrada
-numCursos(2).
-numAssignatures(1).
-numAules(2).
-numProfes(1).
-
-% Sintaxi: assig(curs,assignatura,hores,llistaAules,llistaProfessors).
-assig(1,1,4,[1],[1,2]).
-assig(1,2,1,[1],[1]).
-
-assig(2,3,2,[2],[1,2]).
-
-horesProhibides(1,[1]).
-horesProhibides(2,[]).
-horesProhibides(3,[1,2]).
 
 
 %%%%%% Some helpful definitions to make the code cleaner:
@@ -87,47 +72,66 @@ horesProhibides(3,[1,2]).
 assignatura(As):-numAssignatures(N), between(1,N,As).
 aula(Au):-numAules(N), between(1,N,Au).
 profe(P):-numProfes(N), between(1,N,P).
-hora(H):-between(1,4,H). %¿¿¿Mejor 1 - 12???
-curso(C):-numCursos(N), between(1,N,C).
+hora(H):-between(1,60,H). %¿¿¿Mejor 1 - 12???
+curso(C):-numCursos(N), between(1,N,C). %year == curso
+claseAssig(As,L):-assig(_,As,N,_,_), between(1,N,L).
+dia(D):- between(0,4,D).
 
-assigCurso(As,C):- assignatura(As), curso(C), assig(C,As,_,_,_).
+
 assigAula(As,Au):- assignatura(As), aula(Au), assig(_,As,_,LAu,_), member(Au,LAu).
 assigProfe(As,P):- assignatura(As), profe(P), assig(_,As,_,_,LP), member(P,LP).
+horaProhibidaProfe(P,H):- profe(P), horesProhibides(P,LH), member(H,LH).
+assigCurso(As,C):- assignatura(As), curso(C), assig(C,As,_,_,_).
+
+%¿¿se usa??
 assigNHora(As,NH):- assignatura(As), assig(_,As,NH,_,_).
 
-horaProhibidaProfe(P,H):- profe(P), horesProhibides(P,LH), member(H,LH).
+
 
 %%%%%%  1. SAT Variables:
 
 %¿¿¿Hace falta variable con Assig curso???
-satVariable( ap(As,P) ):- assignatura(As), profe(P).
-satVariable( aa(As,Au)):- assignatura(As), aula(Au).
-satVariable( ah(As,H) ):- assignatura(As), hora(H).
-satVariable( ph(P,H) ):- profe(P), hora(H).
+satVariable( ap(As,P) ):- assignatura(As), profe(P). % ct(C,T)
+satVariable( aa(As,Au)):- assignatura(As), aula(Au). % cr(C,R)
+% cls(C,L,S) la classe número L de l'assignatura C s'imparte a l'slot S
+satVariable( alh(As,L,H) ):- assignatura(As), claseAssig(As,L), hora(H).
+
+satVariable( ch(C,H) ):- curso(C), hora(H).
+satVariable( nch(C,H) ):- curso(C), hora(H).
 
 
 
-%%%%%%  2. Clause generation:
+
+
+%%%%%%  2. Clause generation:sssss
 
 writeClauses:-
     unaAssignaturaAula,
     unaAssignaturaProfe,
-    numAssignaturaHoras, %tarda MUCHOOOO
     horaProhibidaProfe,
-    maxUnProfeHora,
+    mama,
+    maxUnProfeHora, %MUCHAS CLAUSULAS
+    maxUnaAulaHora,
 
+    maxUnaAssigDia,
 
-    %maxUnProfeHora,
+    solapaCurso,
+    
+    horarioCompacto,
+
+    assigHoraCursoHora,
+    noAssigHoraNoCursoHora,
+
+    maxAssigCursoDia,
+
+    
     true,!.                    % this way you can comment out ANY previous line of writeClauses
 writeClauses:- told, nl, write('writeClauses failed!'), nl,nl, halt.
 
 % Sintaxi: assig(curs,assignatura,hores,llistaAules,llistaProfessors).
-%lalala:- assig(C,As,H,LAu,LP), assig(1,1,2,[1,2,3],[1,3]), writeClause([-p(E1,E2,J1),p(E2,E1,J2)]),fail.
-lalala.
 
-%mama:- member(ap(As,P), M ), findall( aa(As,Au), (aula(Au),member(Au,LAu)), Lits ), exactly(1,Lits),fail.
+mama:- assignatura(As), claseAssig(As,L), findall( alh(As,L,H), hora(H), Lits ), exactly(1,Lits), fail.
 mama.
-% member(findall( aa(As,Au), aula(Au), Lits )
 
 unaAssignaturaAula:- assignatura(As), findall( aa(As,Au), (assigAula(As,Au)), Lits ), exactly(1,Lits), fail.
 unaAssignaturaAula.
@@ -135,78 +139,216 @@ unaAssignaturaAula.
 unaAssignaturaProfe:- assignatura(As), findall( ap(As,P), (assigProfe(As,P)), Lits ), exactly(1,Lits), fail.
 unaAssignaturaProfe.
 
-numAssignaturaHoras:- assignatura(As), assigNHora(As,NH), findall( ah(As,H), hora(H), Lits ),  exactly(NH,Lits), fail.
-numAssignaturaHoras.
-
-horaProhibidaProfe:- profe(P), horaProhibidaProfe(P,H), assigProfe(As,P), writeClause([-ah(As,H), -ap(As,P)]), fail.
+horaProhibidaProfe:- profe(P), horaProhibidaProfe(P,H), assigProfe(As,P), claseAssig(As,L),
+    writeClause([-alh(As,L,H), -ap(As,P)]), fail.
 horaProhibidaProfe.
 
-maxUnProfeHora:- profe(P), hora(H), assigProfe(As,P), assigProfe(As2,P), As \= As2,
-    writeClause([-ap(As,P), -ap(As2,P), -ah(As,H), -ah(As2,H)]), fail.
+maxUnProfeHora:- profe(P), hora(H), 
+    assigProfe(As,P), assigProfe(As2,P), As \= As2,
+    claseAssig(As,L), claseAssig(As2,L2),
+    writeClause([-alh(As,L,H), -alh(As2,L2,H), -ap(As,P), -ap(As2,P) ]), fail.
 maxUnProfeHora.
 
-%- Por supuesto, no puede haber más de una clase a la vez por profesor ni por aula.
-maxmaxmax:- profesor(P), hora(H), findall( ah(As,H),  assigProfe(As,P)   , Lits ), atMost(1,Lits),fail. %creo que falla, porque pone un maximo
-maxmaxmax.
-/* %¿¿¿Añadir relacion obvia???
-siAsHsoPH:- profesor(P), assigProfe(As,P), hora(H), writeClause([-ah(As,H), ph(P,H)]), fail.
-siAsHsoPH.
-horaProfeAssignatura:- profe(P), assigProfe(As,P), hora(H), writeClause([-ah(As,H),-ap(As,P), ph(P,H)]), fail.
-horaProfeAssignatura.
-*/
-/*
-maxUnProfeHora:- profe(P), hora(H), assigProfe(As,P), assigProfe(As2,P), As \= As2,
-    writeClause([-ap(As,P), -ap(As2,P), -ah(As,H), -ah(As2,H)]), fail.
-maxUnProfeHora.
-*/
+maxUnaAulaHora:- aula(Au), hora(H), %%no hace falta aula(Au)???
+    assigAula(As,Au), assigAula(As2,Au), As \= As2,
+    claseAssig(As,L), claseAssig(As2,L2),
+    writeClause([-alh(As,L,H), -alh(As2,L2,H), -aa(As,Au), -aa(As2,Au) ]), fail.
+maxUnaAulaHora.
 
-/*%GENERAL
-unaAssignaturaAula:- assignatura(As), findall( aa(As,Au), aula(Au), Lits ), exactly(1,Lits), fail.
-unaAssignaturaAula.
+maxUnaAssigDia:- dia(D), assignatura(As), %¿Si pongo claseAssig aqui???
+    findall( alh(As,L,H), (claseAssig(As,L), hora(H), A is D*12+1, B is A+11, between(A,B,H)), Lits ), 
+    atMost(1,Lits), fail.
+maxUnaAssigDia.
 
-unaAssignaturaProfe:- assignatura(As), findall( ap(As,P), profe(P), Lits ), exactly(1,Lits), fail.
-unaAssignaturaProfe.
-*/
+solapaCurso:- curso(C), hora(H),
+    findall( alh(As,L,H), (assigCurso(As,C), claseAssig(As,L)) , Lits ), 
+    atMost(1,Lits), fail.
+solapaCurso.
 
-notYourself:- equipo(E), jornada(J), writeClause([-p(E,E,J)]),fail.% findall( p(E,E,J), jornada(J), Lits ), exactly(0,Lits), fail.
-notYourself.
 
-primeraIgualSegunda:-
-    equipo(E1), equipo(E2), E1 \= E2, primeraJornada(J1), segundaVuelta(J1,J2),
-    writeClause([-p(E1,E2,J1),p(E2,E1,J2)]),fail.
-primeraIgualSegunda.
 
-unPartidoE1PorJornada:-
-    equipo(E1), jornada(J),
-    findall( p(E1,E2,J), (equipo(E2),E1 \= E2), Lits1 ),
-    findall( p(E2,E1,J), (equipo(E2),E1 \= E2), Lits2 ),
-    append(Lits1,Lits2,AllLits), exactly(1,AllLits),fail.
-unPartidoE1PorJornada.
 
-unPartidoE1E2porLiga:-
-    equipo(E1), equipo(E2), E1 \= E2,
-    findall( p(E1,E2,J), jornada(J), Lits ), exactly(1,Lits), fail. % no se puede usar primeraJornada() porque la vuelta tambine la cuenta
-unPartidoE1E2porLiga.
+assigHoraCursoHora:- curso(C), hora(H), assigCurso(As,C), claseAssig(As,L), 
+    writeClause([ -alh(As,L,H), ch(C,H) ]), fail. 
+    %writeClause([ -ch(C,H),-alh(As,L,H) ]), fail.
+assigHoraCursoHora.
+
+noAssigHoraNoCursoHora:- curso(C), hora(H),
+    findall(alh(As,L,H), (assigCurso(As,C), claseAssig(As,L)), Lits),
+    append([-ch(C,H)], Lits, TL), writeClause(TL), fail.
+noAssigHoraNoCursoHora. 
+
+
+
+horarioCompacto:- dia(D), curso(C), 
+    A is D*12+1, B is A+11, between(A,B,H),
+    H2 is H+1, H3 is H+2, H3 =< B,
+    between(H3,B,Ht),
+    %assigCurso(As,C), claseAssig(As,L), 
+    writeClause([ -ch(C,H), ch(C,H2), -ch(C,Ht) ]), fail.   %esto esta mal
+horarioCompacto.
+
+maxAssigCursoDia:- dia(D), curso(C),
+    findall( ch(C,H), (hora(H), A is D*12+1, B is A+11, between(A,B,H)), Lits ),
+    atMost(6,Lits), fail.
+maxAssigCursoDia.
+
+
+/* horarioCompacto:- dia(D), curso(C), 
+    A is D*12+1, B is A+11, between(A,B,H),
+    H2 is H+1, H3 is H+2, H3 =< B,
+    between(H3,B,Ht),
+    assigCurso(As,C), assigCurso(As2,C), assigCurso(As3,C),
+    As \= As2, As \= As3,
+    As2 \= As3,
+    claseAssig(As,L),claseAssig(As2,L2), claseAssig(As3,L3),
+    writeClause([ -alh(As,L,H), alh(As2,L2,H2), -alh(As3,L3,Ht) ]), fail.
+horarioCompacto. */
+
+
+/* stfu:- curso(C), hora(H), assigCurso(As,C), claseAssig(As,L), 
+    writeClause([ nch(C,H), alh(As,L,H) ]), fail. 
+    %writeClause([ -ch(C,H),-alh(As,L,H) ]), fail.
+stfu.
+
+epi:- numAssignatures(N),
+    findall( ch(C,H), (hora(H),curso(C)) , Lits),
+    atMost(N,Lits), fail.
+epi. */
+
+/* max6AssigCurso:- dia(D), curso(C), 
+    findall( alh(As,L,H), (assigCurso(As,C), claseAssig(As,L)) , Lits ), 
+    atMost(1,Lits), fail.
+max6AssigCurso. */
+
+/* horarioCompacto:- dia(D), curso(C), 
+    A is D*12+1, B is A+11, between(A,B,H),
+    H2 is H+1, H3 is H+2, H3 =< B,
+    assigCurso(As,C), assigCurso(As2,C), assigCurso(As3,C),
+    As \= As2, As \= As3,
+    As2 \= As3,
+    claseAssig(As,L),claseAssig(As2,L2), claseAssig(As3,L3),
+    writeClause([ -alh(As,L,H), alh(As2,L2,H2), -alh(As3,L3,H3) ]), fail.
+horarioCompacto. */
+
 
 
 %%%%%%  3. DisplaySol: show the solution. Here M contains the literals that are true in the model:
+
+
+/* displaySol(M):- nl, curso(C), hora(H), member(ch(C,H), M), write(ch(C,H)), nl,
+    assigCurso(As,C), claseAssig(As,L), member(alh(As,L,H), M ), write(alh(As,L,H)), nl,
+    fail.
+displaySol(_):- nl,nl.
+
 displaySol(M):- nl, assignatura(As), nl, member(ap(As,P), M ), write(ap(As,P)), write(' '),
     member(aa(As,Au), M ),write(aa(As,Au)), write(' '),
     member(ah(As,H), M ),write(ah(As,H)), write(' '), fail.
-displaySol(_):- nl,nl.
+displaySol(_):- nl,nl. */
 
-/*
-displaySol(M):- nl, assignatura(As), nl, member(ap(As,P), M ), write(ap(As,P)), write(' '), fail.
-displaySol(_):- nl,nl.
-*/
 
-/*displaySol(M):- nl, hora(H), nl, member(ah(As,H), M ), write(ah(As,H)), write(' '), fail.
-displaySol(_):- nl,nl.*/
+%AQUI
 
-line(I):-member(I,[4,7]), nl,!. %para separar dos veces si es otro bloque
-line(_).
-space(J):-member(J,[4,7]), write(' '),!. % lo mismo pero vertical
-space(_).
+extraBlank(N):-
+    N < 10, !, write(' ').
+extraBlank(_).
+
+drawTail(Y, Hour):-
+    Hour > 48,
+    write('  Curs: '), write(Y), nl.
+drawTail(_, _).
+
+drawCell(Y, S, M):-
+    member(alh(C,L,S), M),                   %% -------- ADAPTA la SAT variable cls(C,L,S)
+        %write(alh(C,L,S)),
+        %write(Y),
+    assig(Y, C, _, _, _),!,
+    write(' '), extraBlank(C), write(C), write(' - '),
+    extraBlank(L), write(L),
+    write('  ['), member(aa(C,R), M),        %% -------  ADAPTA la SAT variable cr(C,R)
+    write('A:'), extraBlank(R), write(' '), write(R), write(']'),
+    write('  ['), member(ap(C,T), M),        %% -------  ADAPTA la SAT variable ct(C,T)
+    write('P:'), extraBlank(T), write(' '), write(T), write(']'),
+    write(' ').
+drawCell(_, _, _):-
+    write('                           ').
+
+drawRow(Row, _):-
+    1 is Row mod 2,
+    H is Row // 2 + 8,
+    extraBlank(H),
+    write(' '), write(H), write(':00 '),
+    between(1, 141, _), write('='),
+    fail.
+drawRow(Row, _):-
+    1 is Row mod 2, !, nl.
+
+drawRow(Row, M):-
+    curso(Y),
+    write('       |'),
+    between(0, 4, Day),
+    Hour is Row // 2 + Day * 12,
+    drawCell(Y, Hour, M),
+    write('|'),
+    drawTail(Y, Hour),
+    fail.
+drawRow(_, _).
+
+drawHeader:-
+    nl, nl,
+    write(' Format de sortida: Assignatura - Hora [A: Aula] [P: Professor]'),
+    nl, nl,
+    write('                 Dilluns                     Dimarts                     dimecres                     Dijous                    Divendres').
+
+displaySchedule(M):-
+    drawHeader, nl,
+    between(1, 25, Row),
+    drawRow(Row, M),
+    fail.
+
+drawHeaderYear(Y):-
+    nl, nl,
+    write('----------------------------------------------------------------------------------------------------------------------------------------------------'),
+    nl,
+    write(' Horari del curs '), write(Y),
+    nl,
+    write(' Format de sortida: Assignatura - Hora [A: Aula] [P: Professor]'),
+    nl, nl,
+    write('                 Dilluns                     Dimarts                     dimecres                     Dijous                    Divendres').
+
+drawTailYear(Hour):-
+    Hour > 48, nl.
+drawTailYear(_, _).
+
+drawRowYear(Row, _, _):-
+    1 is Row mod 2,
+    H is Row // 2 + 8,
+    extraBlank(H),
+    write(' '), write(H), write(':00 '),
+    between(1, 141, _), write('='),
+    fail.
+drawRowYear(Row, _, _):-
+    1 is Row mod 2, !, nl.
+drawRowYear(Row, Y, M):-
+    write('       |'),
+    between(0, 4, Day),
+    Hour is Row // 2 + Day * 12,
+    drawCell(Y, Hour, M),
+    write('|'),
+    drawTailYear(Hour),
+    fail.
+drawRowYear(_, _, _).
+
+displayScheduleYear(Y,M):-
+    drawHeaderYear(Y), nl,
+    between(1, 25, Row),
+    drawRowYear(Row, Y, M),
+    fail.
+
+displaySol(M):- displaySchedule(M), fail.
+displaySol(M):- curso(Y), displayScheduleYear(Y,M), fail.
+displaySol(_).
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 

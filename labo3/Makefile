@@ -10,3 +10,6 @@ miLiga:	miLiga.pl
 
 miHorari: miHorari.pl
 		swipl -q -O -g main --stand_alone=true -o miHorari -c miHorari.pl
+		
+miFlow: miFlow.pl
+		swipl -q -O -g main --stand_alone=true -o miFlow -c miFlow.pl

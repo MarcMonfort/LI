@@ -72,19 +72,26 @@ sipartido(4,5,30).
 
 %NEW
 equipo(E):- numEquipos(N), between(1,N,E).
-jornada(J):- numEquipos(N), N1 is N*2-2, between(1,N1,J). %N1 is N*2-2
+otroEquipo(E1,E2):- equipo(E2), E1\=E2.
+jornada(J):- numEquipos(N), N1 is (N-1)*2, between(1,N1,J). %N1 is N*2-2
+
 primeraJornada(J):- numEquipos(N), N1 is N-1, between(1,N1,J).
 segundaJornada(J):- numEquipos(N), N1 is N, N2 is N*2-2, between(N1,N2,J).
 segundaVuelta(J1,J2):- primeraJornada(J1), numEquipos(N), J2 is J1+N-1. %¿¿¿Hace falta primeraJornada(N)???
+
 tresJornadas(J1,J2,J3):- jornada(J1), jornada(J2), jornada(J3), J2 is J1+1, J3 is J2+1.
 
+siguienteJornada(J1,J2):- jornada(J1), J2 is J1+1, jornada(J2).
 
 
 %%%%%%  1. SAT Variables:
 
 %NEW
 %p(E1,E2,J) mean equipo E1 y E2 juegan en la jornada J (E1 local).
-satVariable( p(E1,E2,J) ):- equipo(E1), equipo(E2), jornada(J). %, E1 =\= E2 ???
+satVariable( p(E1,E2,J)  ):- equipo(E1), equipo(E2), jornada(J). %, E1 =\= E2 ???
+satVariable( home(E,J)   ):- jornada(J), equipo(E), !.   % "team S plays at home on round R"
+
+satVariable( double(E,J) ):- jornada(J), equipo(E), !.  % "team S has a double on round R"		    
 
 
 %%%%%%  2. Clause generation:
@@ -92,6 +99,7 @@ satVariable( p(E1,E2,J) ):- equipo(E1), equipo(E2), jornada(J). %, E1 =\= E2 ???
 %NEW
 writeClauses:-
     notYourself,
+
     primeraIgualSegunda,
     unPartidoE1PorJornada,
     unPartidoE1E2porLiga,
@@ -99,59 +107,115 @@ writeClauses:-
     noJugarFuera,
     noPartido,
     siPartido,
+
+    homesAndAways,
     noRepes1,
-    noTripeticiones,    % tarda mucho!!! peta con 4 (a no ser que primeraJornada)
+    noTripeticiones,    % arreglado!
+
+    atMostKDouble, % muy lento!!!!!
     true,!.
 
 writeClauses:- told, nl, write('writeClauses failed!'), nl,nl, halt.
 
 
-notYourself:- equipo(E), jornada(J), writeClause([-p(E,E,J)]),fail.% findall( p(E,E,J), jornada(J), Lits ), exactly(0,Lits), fail.
+notYourself:- %bien
+    equipo(E), jornada(J), 
+    writeClause([-p(E,E,J)]),fail.
 notYourself.
 
-primeraIgualSegunda:-
-    equipo(E1), equipo(E2), E1 \= E2, primeraJornada(J1), segundaVuelta(J1,J2),
+primeraIgualSegunda:- %bien
+    equipo(E1), equipo(E2), E1 \= E2, 
+    primeraJornada(J1), segundaVuelta(J1,J2),
     writeClause([-p(E1,E2,J1),p(E2,E1,J2)]),fail.
 primeraIgualSegunda.
 
-unPartidoE1PorJornada:-
+unPartidoE1PorJornada:- %bien
     equipo(E1), jornada(J),
     findall( p(E1,E2,J), (equipo(E2),E1 \= E2), Lits1 ),
     findall( p(E2,E1,J), (equipo(E2),E1 \= E2), Lits2 ),
     append(Lits1,Lits2,AllLits), exactly(1,AllLits),fail.
 unPartidoE1PorJornada.
 
-unPartidoE1E2porLiga:-
+unPartidoE1E2porLiga:- %bien
     equipo(E1), equipo(E2), E1 \= E2,
-    findall( p(E1,E2,J), jornada(J), Lits ), exactly(1,Lits), fail. % no se puede usar primeraJornada() porque la vuelta tambine la cuenta
+    findall( p(E1,E2,J), jornada(J), Lits ), 
+    exactly(1,Lits), fail. % no se puede usar primeraJornada() porque la vuelta tambine la cuenta
 unPartidoE1E2porLiga.
 
-noTripeticiones:- equipo(E1), equipo(E2), equipo(E3), equipo(E4),
+
+% Las faciles...
+noJugarCasa:- 
+    nocasa(E1,J), 
+    equipo(E2), E1 \= E2, 
+    writeClause([-p(E1,E2,J)]),fail.
+noJugarCasa.
+
+noJugarFuera:- 
+    nofuera(E1,J), 
+    equipo(E2), E1 \= E2, 
+    writeClause([-p(E2,E1,J)]),fail.
+noJugarFuera.
+
+noPartido:- 
+    nopartido(E1,E2,J), 
+    writeClause([-p(E1,E2,J)]),fail.
+noPartido.
+
+siPartido:- 
+    sipartido(E1,E2,J), 
+    writeClause([p(E1,E2,J)]), fail.
+siPartido.
+
+
+% las complicadas...
+
+homesAndAways:- 
+    equipo(E1), otroEquipo(E1,E2), jornada(J),
+    writeClause([ -p(E1,E2,J),  home(E1,J) ]), 
+    writeClause([ -p(E1,E2,J), -home(E2,J) ]), fail.
+homesAndAways.
+
+noRepes1:- norepes(J1,J2), equipo(E),
+    writeClause([  home(E,J1),  home(E,J2)]), % volley...
+    writeClause([ -home(E,J1), -home(E,J2)]), fail.
+noRepes1.
+/* noRepes1:- norepes(J1,J2), equipo(E1), equipo(E2), equipo(E3),
+    E1 \= E2, E1 \= E3, E2 \= E3,
+    writeClause([-p(E1,E2,J1),-p(E1,E3,J2)]), %mismo pensamiento que noTripeticiones...
+    writeClause([-p(E2,E1,J1),-p(E3,E1,J2)]), fail.
+noRepes1. */
+
+
+noTripeticiones:- equipo(E),
+    jornada(J1), siguienteJornada(J1,J2), siguienteJornada(J2,J3),
+    writeClause([  home(E,J1),  home(E,J2),  home(E,J3) ]),
+    writeClause([ -home(E,J1), -home(E,J2), -home(E,J3) ]), fail.
+noTripeticiones.
+/* noTripeticiones:- equipo(E1), equipo(E2), equipo(E3), equipo(E4),
     E1 \= E2, E1 \= E3, E1 \= E4,   % puede que pete con jornada en vez de primeraJornada() (peta con 4)
     E2 \= E3, E2 \= E4,
     E3 \= E4,       % con menos jornadas puede que pete!!!!!!
     jornada(J1), tresJornadas(J1,J2,J3),    %¿¿¿jornada() o primeraJornada()???
     writeClause([-p(E1,E2,J1),-p(E1,E3,J2),-p(E1,E4,J3)]),  %hay que pensar que es (...) -> ((E1) no local para ningun equipo)// en vez de ((E1) visitante para todos los equipos)
     writeClause([-p(E2,E1,J1),-p(E3,E1,J2),-p(E4,E1,J3)]), fail.
-noTripeticiones.
+noTripeticiones. */
 
-noJugarCasa:- nocasa(E1,J), equipo(E2), E1 \= E2, writeClause([-p(E1,E2,J)]),fail.
-noJugarCasa.
 
-noJugarFuera:- nofuera(E1,J), equipo(E2), E1 \= E2, writeClause([-p(E2,E1,J)]),fail.
-noJugarFuera.
 
-noPartido:- nopartido(E1,E2,J), writeClause([-p(E1,E2,J)]),fail.
-noPartido.
+%EXTRA:  Repeticiones == Doubles!
+maxDoubles(5).
 
-siPartido:- sipartido(E1,E2,J), writeClause([p(E1,E2,J)]), fail.
-siPartido.
+atMostKDouble:- 
+    equipo(S), jornada(R), R1 is R-1, jornada(R1),
+    writeClause([ -home(S,R1),  -home(S,R), double(S,R) ]), 
+    writeClause([  home(S,R1),   home(S,R), double(S,R) ]), fail.
+atMostKDouble:- 
+    maxDoubles(K), equipo(S), 
+    findall( double(S,R), (jornada(R),R>1), Lits), atMost(K,Lits), fail.
+atMostKDouble.
 
-noRepes1:- norepes(J1,J2), equipo(E1), equipo(E2), equipo(E3),
-    E1 \= E2, E1 \= E3, E2 \= E3,
-    writeClause([-p(E1,E2,J1),-p(E1,E3,J2)]), %mismo pensamiento que noTripeticiones...
-    writeClause([-p(E2,E1,J1),-p(E3,E1,J2)]), fail.
-noRepes1.
+
+
 
 %%%%%%  3. DisplaySol: show the solution. Here M contains the literals that are true in the model:
 
@@ -161,7 +225,7 @@ displaySol(M):-  jornada(J), nl,
     member(p(E1,E2,J), M ),
     nl, tab(6),sizeNum(E1), write(E1), write(" — "),write(E2),
     fail.
-displaySol(_):- nl,nl.
+%displaySol(_):- nl,nl.
 
 sizeNum(N):-N < 10, write(" "),!.
 sizeNum(_).
@@ -177,7 +241,16 @@ vuelta(J):- numEquipos(N), J is N, nl,nl,
 vuelta(_).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
+displaySol(M):- equipo(E), nl, nl,  write("Equipo: "), write(E), nl,
+    jornada(J), write(J), lolo(M, E, J), nl, fail.
 
+
+
+lolo(M, E, J):- member(p(E,_,J), M), write(" L").
+lolo(M, E, J):- member(p(_,E,J), M), write(" VVVV").
+
+
+displaySol(_):- nl,nl.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Everything below is given as a standard library, reusable for solving

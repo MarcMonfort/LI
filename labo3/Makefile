@@ -13,3 +13,6 @@ miHorari: miHorari.pl
 		
 miFlow: miFlow.pl
 		swipl -q -O -g main --stand_alone=true -o miFlow -c miFlow.pl
+
+miHorariMejorado: miHorariMejorado.pl
+		swipl -q -O -g main --stand_alone=true -o miHorariMejorado -c miHorariMejorado.pl

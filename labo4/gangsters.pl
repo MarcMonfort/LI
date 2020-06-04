@@ -72,10 +72,6 @@ numGangsters(N):- gangsters(L), length(L,N).
 
 % We use (at least) the following types of symbolic propositional variables:
 %   1. does(G,T,H) means:  "gangster G does task T at hour H"     (MANDATORY)
-%   2. ...
-
-% 1.- Declare SAT variables to be used
-% x(I,C)    meaning  "node I has color C"
 satVariable( does(G,T,H) ):- gangster(G), task(T), hour(H).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -93,23 +89,36 @@ writeClauses(MaxHours):-
 writeClauses(_):- told, nl, write('writeClauses failed!'), nl,nl, halt.
 
 
-maxOneTaskHour:- gangster(G), hour(H), findall( does(G,T,H) , task(T), Lits), atMost(1,Lits),fail.
+maxOneTaskHour:- 
+    gangster(G), hour(H), 
+    findall( does(G,T,H) , task(T), Lits), 
+    atMost(1,Lits),fail.
 maxOneTaskHour.
 /* maxOneTaskHour:- gangster(G), hour(H), task(T), task(T2), T2 \= T,
     writeClause([ -does(G,T,H), -does(G,T2,H) ]), fail.
 maxOneTaskHour. */
 
-oneRestHour:- gangster(G), hour(H1), H2 is H1+1, hour(H2), task(T1), task(T2), T2 \= T1,
+oneRestHour:- 
+    gangster(G), 
+    hour(H1), H2 is H1+1, hour(H2), 
+    task(T1), task(T2), T2 \= T1,
     writeClause([ -does(G,T1,H1), -does(G,T2,H2) ]), fail.
 oneRestHour.
 
-doneTasks:- needed(T,H,N), findall( does(G,T,H), gangster(G), Lits ), atLeast(N,Lits),fail. %lets them have fun...(atLeast)
+doneTasks:- 
+    needed(T,H,N), 
+    findall( does(G,T,H), gangster(G), Lits ), 
+    atLeast(N,Lits),fail. %lets them have fun...(atLeast)
 doneTasks.
 
-notBlockedHours:- blocked(G,H), task(T), writeClause([ -does(G,T,H) ]), fail.
+notBlockedHours:- 
+    blocked(G,H), task(T), 
+    writeClause([ -does(G,T,H) ]), fail.
 notBlockedHours.
 
-maxConsecHours(MaxHours):- gangster(G), hour(H), H2 is H+MaxHours, hour(H2), task(T),
+maxConsecHours(MaxHours):- 
+    gangster(G), 
+    hour(H), H2 is H+MaxHours, hour(H2), task(T),
     findall( -does(G,T,HH), between(H,H2,HH) , Lits), atLeast(1,Lits),fail.
 maxConsecHours(_).
 
@@ -145,6 +154,25 @@ costOfThisSolution(M,Cost):- between(0,72,Nh), Cost is 72 - Nh,
 
 seguido([_]).
 seguido([H|[H2|L]]):- H2 is H+1, seguido([H2|L]).
+
+/* 
+costOfThisSolution(M,K):- 
+    between(0,72,N), K is 72 - N, 
+    gangster(G), 
+    llistaHoresTreballades(G,M,L), 
+    hihaSubllistaHoresConsecutives(K,L), !.
+
+hihaSubllistaHoresConsecutives(K,L):- 
+    append([_,LK,_], L), 
+    length(LK,K), 
+    horesConsecutives(LK,K).
+
+llistaHoresTreballades(G,M,L):- 
+    findall(H, member(does(G,_,H), M), L).
+
+horesConsecutives(LK,K):- 
+    append([X|_],[Y],LK), K is Y-X+1.
+   */
 
 
 

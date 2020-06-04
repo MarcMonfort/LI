@@ -67,7 +67,7 @@ pieces([[1,3,1]]). */
 
 
 
-:-include(inputExamples/input7). %ejemplos
+:-include(inputExamples/input4). %ejemplos
 
 :-dynamic(varNumber / 3).
 symbolicOutput(0).  % set to 1 to see symbolic output only; 0 otherwise.
@@ -135,19 +135,29 @@ writeClauses(MaxPieces):-
 writeClauses(_):- told, nl, write('writeClauses failed!'), nl,nl, halt.
 
 
-fillCell:-  contentsCellBanner(X,Y,x), findall( pieceCell(P,X,Y) , piece(P), Lits ), exactly(1,Lits), fail.
+fillCell:-  
+    contentsCellBanner(X,Y,x), 
+    findall( pieceCell(P,X,Y) , piece(P), Lits ), 
+    exactly(1,Lits), fail.
 fillCell.
 
-emptyCell:- contentsCellBanner(X,Y,C), C \= x, findall( pieceCell(P,X,Y) , piece(P), Lits ), exactly(0,Lits), fail.
+emptyCell:- 
+    contentsCellBanner(X,Y,C), C \= x, 
+    findall( pieceCell(P,X,Y) , piece(P), Lits ), 
+    exactly(0,Lits), fail.
 emptyCell.
 
-onePieceStart:- piece(P), findall( pieceStarts(P,X,Y), cell(X,Y), Lits), atMost(1,Lits), fail.
+onePieceStart:- 
+    piece(P), 
+    findall( pieceStarts(P,X,Y), cell(X,Y), Lits), 
+    atMost(1,Lits), fail.
 onePieceStart.
 
 
 
 %si se usa, tiene que empezar en algun punto posible
-ifUsedThenStart:- pieceSize(P,W,H), 
+ifUsedThenStart:- 
+    pieceSize(P,W,H), 
     findall(pieceStarts(P,Xi,Yi), getPieceStart(W,H,Xi,Yi),  Lits1),
     findall(pieceStarts(P,Xi,Yi), getPieceStart(H,W,Xi,Yi),  Lits2),
 
@@ -155,11 +165,12 @@ ifUsedThenStart:- pieceSize(P,W,H),
     append([-used(P), -rotated(P)], Lits2, LT2), writeClause(LT2), fail.
 
     %expressOr([used(P), rotated(P)], Lits), fail.
-
 ifUsedThenStart.
 
 %si no se usa, no pinta
-notUsedNoFill:- cell(X,Y), piece(P), writeClause([used(P),-pieceCell(P,X,Y)]), fail.
+notUsedNoFill:- 
+    cell(X,Y), piece(P), 
+    writeClause([used(P),-pieceCell(P,X,Y)]), fail.
 notUsedNoFill.
 
 
@@ -180,7 +191,6 @@ noPieceNoFill:-
 noPieceNoFill.
 
 
-
 %si empieze y esta rotada, llena el tamaño
 rotatedPieceFillsSize:- 
     pieceSize(P,H,W),
@@ -198,7 +208,9 @@ noRotatedPieceNoFills.
 
 
 
-maxUsedPieces(MaxPieces):- findall( used(P), piece(P), Lits ), atMost(MaxPieces, Lits), fail.
+maxUsedPieces(MaxPieces):- 
+    findall( used(P), piece(P), Lits ), 
+    atMost(MaxPieces, Lits), fail.
 maxUsedPieces(_).
 
 

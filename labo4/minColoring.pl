@@ -54,17 +54,22 @@ satVariable( x(I,C) ):- node(I), color(C).
 % 2. This predicate writeClauses(MaxCost) generates the clauses that guarantee that
 % a solution with cost at most MaxCost is found
 
-writeClauses(infinite):- !, /* numNodes(N), */ writeClauses(6),!.
+writeClauses(infinite):- !, numNodes(N), writeClauses(N),!.
 writeClauses(MaxColors):-
     eachNodeExactlyOnecolor(MaxColors),
     noAdjacentNodesWithSameColor(MaxColors),
     true,!.
 writeClauses(_):- told, nl, write('writeClauses failed!'), nl,nl, halt.
 
-eachNodeExactlyOnecolor(MaxColors):- node(I), findall(x(I,C), between(1,MaxColors,C), Lits ), exactly(1,Lits), fail.
+eachNodeExactlyOnecolor(MaxColors):- 
+    node(I), 
+    findall(x(I,C), between(1,MaxColors,C), Lits ), 
+    exactly(1,Lits), fail.
 eachNodeExactlyOnecolor(_).
 
-noAdjacentNodesWithSameColor(MaxColors):- edge(I,J), between(1,MaxColors,C), writeClause([ -x(I,C), -x(J,C) ]), fail.
+noAdjacentNodesWithSameColor(MaxColors):- 
+    edge(I,J), between(1,MaxColors,C), 
+    writeClause([ -x(I,C), -x(J,C) ]), fail.
 noAdjacentNodesWithSameColor(_).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -77,7 +82,9 @@ displaySol(_):- nl,!.
 
 %costOfThisSolution(M,1). %parece no tener nada que ver
 
-costOfThisSolution(M,Cost):- findall(C,member(x(_,C),M),L), sort(L,L1), length(L1,Cost), !.
+costOfThisSolution(M,Cost):- 
+    findall(C,member(x(_,C),M),L), 
+    sort(L,L1), length(L1,Cost), !.
 
 
 

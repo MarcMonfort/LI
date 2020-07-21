@@ -9,10 +9,16 @@ unPaso([A,_],[A,8]).
 unPaso([_,B],[0,B]).    %vaciar cubo
 unPaso([A,_],[A,0]).
 
-unPaso([A,B],[A2,B2]):- Left is 8-B, Left > 0, Fill is min(Left,A), B2 is B + Fill, A2 is A - Fill. 
-unPaso([A,B],[A2,B2]):- Left is 5-A, Left > 0, Fill is min(Left,B), A2 is A + Fill, B2 is B - Fill.
-
-
+unPaso([A,B],[A2,B2]):-     % verter cubo A(5) en B(8)
+    Left is 8-B, Left > 0,  % Left es lo que falta para estar lleno
+    Fill is min(Left,A), 
+    B2 is B + Fill, 
+    A2 is A - Fill. 
+unPaso([A,B],[A2,B2]):-     % verter cubo B(8) en A(5)
+    Left is 5-A, Left > 0, 
+    Fill is min(Left,B), 
+    A2 is A + Fill, 
+    B2 is B - Fill.
 
 
 camino( E,E, C,C ).
@@ -25,7 +31,7 @@ nat(0).
 nat(N):- nat(N1), N is N1+1.
 
 solucionOptima:-
-    nat(N), % Buscamos soluci´on de "coste" 0; si no, de 1, etc.
-    camino([0,0],[0,4],[[0,0]],C), % En "hacer aguas": -un estado es [cubo5,cubo8], y
-    length(C,N), % -el coste es la longitud de C.
+    nat(N),                         % Buscamos soluci´on de "coste" 0; si no, de 1, etc.
+    camino([0,0],[0,4],[[0,0]],C),  % En "hacer aguas": -un estado es [cubo5,cubo8], y
+    length(C,N),                     % -el coste es la longitud de C.
     write(C).

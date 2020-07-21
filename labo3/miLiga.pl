@@ -112,31 +112,31 @@ writeClauses:-
     noRepes1,
     noTripeticiones,    % arreglado!
 
-    atMostKDouble, % muy lento!!!!!
+    %atMostKDouble, % muy lento!!!!!
     true,!.
 
 writeClauses:- told, nl, write('writeClauses failed!'), nl,nl, halt.
 
 
-notYourself:- %bien
+notYourself:-
     equipo(E), jornada(J), 
     writeClause([-p(E,E,J)]),fail.
 notYourself.
 
-primeraIgualSegunda:- %bien
+primeraIgualSegunda:-
     equipo(E1), equipo(E2), E1 \= E2, 
     primeraJornada(J1), segundaVuelta(J1,J2),
     writeClause([-p(E1,E2,J1),p(E2,E1,J2)]),fail.
 primeraIgualSegunda.
 
-unPartidoE1PorJornada:- %bien
+unPartidoE1PorJornada:-
     equipo(E1), jornada(J),
     findall( p(E1,E2,J), (equipo(E2),E1 \= E2), Lits1 ),
     findall( p(E2,E1,J), (equipo(E2),E1 \= E2), Lits2 ),
     append(Lits1,Lits2,AllLits), exactly(1,AllLits),fail.
 unPartidoE1PorJornada.
 
-unPartidoE1E2porLiga:- %bien
+unPartidoE1E2porLiga:-
     equipo(E1), equipo(E2), E1 \= E2,
     findall( p(E1,E2,J), jornada(J), Lits ), 
     exactly(1,Lits), fail. % no se puede usar primeraJornada() porque la vuelta tambine la cuenta
@@ -225,7 +225,7 @@ displaySol(M):-  jornada(J), nl,
     member(p(E1,E2,J), M ),
     nl, tab(6),sizeNum(E1), write(E1), write(" — "),write(E2),
     fail.
-%displaySol(_):- nl,nl.
+displaySol(_):- nl,nl.
 
 sizeNum(N):-N < 10, write(" "),!.
 sizeNum(_).
@@ -241,7 +241,8 @@ vuelta(J):- numEquipos(N), J is N, nl,nl,
 vuelta(_).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
-displaySol(M):- equipo(E), nl, nl,  write("Equipo: "), write(E), nl,
+% Para ver repeticions mas comodamente!
+/* displaySol(M):- equipo(E), nl, nl,  write("Equipo: "), write(E), nl,
     jornada(J), write(J), lolo(M, E, J), nl, fail.
 
 
@@ -250,7 +251,7 @@ lolo(M, E, J):- member(p(E,_,J), M), write(" L").
 lolo(M, E, J):- member(p(_,E,J), M), write(" VVVV").
 
 
-displaySol(_):- nl,nl.
+displaySol(_):- nl,nl. */
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Everything below is given as a standard library, reusable for solving

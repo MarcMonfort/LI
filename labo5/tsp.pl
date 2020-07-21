@@ -11,8 +11,8 @@ main:- bestRouteSoFar(Km,ReverseRoute), reverse( ReverseRoute, Route ), nl,
 tsp( [], AccumulatedKm, RouteSoFar ):- storeRouteIfBetter(AccumulatedKm,RouteSoFar), fail.
 tsp(  _, AccumulatedKm, _          ):- bestRouteSoFar(Km,_), AccumulatedKm >= Km, !, fail.
 tsp( Cities, AccumulatedKm, [ CurrentCity | RouteSoFar ] ):-
-    select( City, Cities, RemainingCities ),  % select next city to visit
-    distance( CurrentCity, City, Km ),  AccumulatedKm1 is AccumulatedKm+Km,
+    select( City, Cities, RemainingCities ),  									% select next city to visit
+    distance( CurrentCity, City, Km ),  AccumulatedKm1 is AccumulatedKm+Km,		% caclula la distancia y la aumenta a la total
     tsp( RemainingCities, AccumulatedKm1, [ City, CurrentCity | RouteSoFar ] ).
 
 storeRouteIfBetter( Km, Route ):-  bestRouteSoFar( BestKm, _ ), Km < BestKm,

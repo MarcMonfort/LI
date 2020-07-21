@@ -25,7 +25,7 @@ Hay que mostrar la solución por horas (cada hora qué hay) y despúes de cada c
 
 %ENTRADA
 
-numCursos(4).
+/* numCursos(4).
 numAssignatures(23).
 numAules(3).
 numProfes(5).
@@ -63,9 +63,9 @@ horesProhibides(1,[5,8,9,14,21,22,24,26,30,31,41,55,56]).
 horesProhibides(2,[5,7,8,9,12,15,19,20,25,26,27,29,31,33,37,38,42,46,50,55,58,60]).
 horesProhibides(3,[10,14,20,23,26,32,37,39,40,43,44,53,55]).
 horesProhibides(4,[2,7,14,16,19,23,24,31,32,34,40,42,45,47,48,49,50,51,53,54,56,58,59]).
-horesProhibides(5,[7,10,11,12,15,20,22,25,27,34,37,39,41,42,46,49,51,52,60]).
+horesProhibides(5,[7,10,11,12,15,20,22,25,27,34,37,39,41,42,46,49,51,52,60]). */
 
-
+:- include(entradaHoraris1).
 
 %%%%%% Some helpful definitions to make the code cleaner:
 
@@ -97,7 +97,6 @@ satVariable( aa(As,Au)):- assignatura(As), aula(Au). % cr(C,R)
 satVariable( alh(As,L,H) ):- assignatura(As), claseAssig(As,L), hora(H).
 
 satVariable( ch(C,H) ):- curso(C), hora(H).
-satVariable( nch(C,H) ):- curso(C), hora(H).
 
 
 
@@ -109,7 +108,7 @@ writeClauses:-
     unaAssignaturaAula,
     unaAssignaturaProfe,
     horaProhibidaProfe,
-    mama,
+    unaAssigHora,
     maxUnProfeHora, %MUCHAS CLAUSULAS
     maxUnaAulaHora,
 
@@ -130,8 +129,8 @@ writeClauses:- told, nl, write('writeClauses failed!'), nl,nl, halt.
 
 % Sintaxi: assig(curs,assignatura,hores,llistaAules,llistaProfessors).
 
-mama:- assignatura(As), claseAssig(As,L), findall( alh(As,L,H), hora(H), Lits ), exactly(1,Lits), fail.
-mama.
+unaAssigHora:- assignatura(As), claseAssig(As,L), findall( alh(As,L,H), hora(H), Lits ), exactly(1,Lits), fail.
+unaAssigHora.
 
 unaAssignaturaAula:- assignatura(As), findall( aa(As,Au), (assigAula(As,Au)), Lits ), exactly(1,Lits), fail.
 unaAssignaturaAula.
@@ -167,7 +166,7 @@ solapaCurso.
 
 
 
-
+% buff...
 assigHoraCursoHora:- curso(C), hora(H), assigCurso(As,C), claseAssig(As,L), 
     writeClause([ -alh(As,L,H), ch(C,H) ]), fail. 
     %writeClause([ -ch(C,H),-alh(As,L,H) ]), fail.
@@ -193,43 +192,6 @@ maxAssigCursoDia:- dia(D), curso(C),
     atMost(6,Lits), fail.
 maxAssigCursoDia.
 
-
-/* horarioCompacto:- dia(D), curso(C), 
-    A is D*12+1, B is A+11, between(A,B,H),
-    H2 is H+1, H3 is H+2, H3 =< B,
-    between(H3,B,Ht),
-    assigCurso(As,C), assigCurso(As2,C), assigCurso(As3,C),
-    As \= As2, As \= As3,
-    As2 \= As3,
-    claseAssig(As,L),claseAssig(As2,L2), claseAssig(As3,L3),
-    writeClause([ -alh(As,L,H), alh(As2,L2,H2), -alh(As3,L3,Ht) ]), fail.
-horarioCompacto. */
-
-
-/* stfu:- curso(C), hora(H), assigCurso(As,C), claseAssig(As,L), 
-    writeClause([ nch(C,H), alh(As,L,H) ]), fail. 
-    %writeClause([ -ch(C,H),-alh(As,L,H) ]), fail.
-stfu.
-
-epi:- numAssignatures(N),
-    findall( ch(C,H), (hora(H),curso(C)) , Lits),
-    atMost(N,Lits), fail.
-epi. */
-
-/* max6AssigCurso:- dia(D), curso(C), 
-    findall( alh(As,L,H), (assigCurso(As,C), claseAssig(As,L)) , Lits ), 
-    atMost(1,Lits), fail.
-max6AssigCurso. */
-
-/* horarioCompacto:- dia(D), curso(C), 
-    A is D*12+1, B is A+11, between(A,B,H),
-    H2 is H+1, H3 is H+2, H3 =< B,
-    assigCurso(As,C), assigCurso(As2,C), assigCurso(As3,C),
-    As \= As2, As \= As3,
-    As2 \= As3,
-    claseAssig(As,L),claseAssig(As2,L2), claseAssig(As3,L3),
-    writeClause([ -alh(As,L,H), alh(As2,L2,H2), -alh(As3,L3,H3) ]), fail.
-horarioCompacto. */
 
 
 

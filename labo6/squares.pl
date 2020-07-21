@@ -5,15 +5,17 @@ ejemplo(0,  3,[2,1,1,1,1,1]).
 ejemplo(1,  4,[2,2,2,1,1,1,1]).
 ejemplo(2,  5,[3,2,2,2,1,1,1,1]).
 ejemplo(3, 19,[10,9,7,6,4,4,3,3,3,3,3,2,2,2,1,1,1,1,1,1]).
+
 ejemplo(4,112,[50,42,37,35,33,29,27,25,24,19,18,17,16,15,11,9,8,7,6,4,2]).
 ejemplo(5,175,[81,64,56,55,51,43,39,38,35,33,31,30,29,20,18,16,14,9,8,5,4,3,2,1]).
 
 main:- 
-    ejemplo(2,Big,Sides),
+    ejemplo(3,Big,Sides),
     nl, write('Fitting all squares of size '), write(Sides), write(' into big square of size '), write(Big), nl,nl,
+    % 1. vars + domains
+    % 1a. vars
     length(Sides,N),
-
-    length(RowVars,N), % get list of N prolog vars: Row coordinates of each small square
+    length(RowVars,N), % get list of N prolog vars: Row coordinates of each small square (ABAJO IZQUIERDA)
     length(ColVars,N), % get list of N prolog vars: Col coordinates of each small square
     append(RowVars, ColVars, L),
 
@@ -36,14 +38,38 @@ insideBigSquare(_, Big, [S|Sides], [V|Vars]):-
     insideBigSquare(_, Big, Sides, Vars).
 
 
+% No overlappiing
 nonoverlapping(_,Sides,RowVars,ColVars):-
     rectangles(Sides, RowVars, ColVars, L),
     disjoint2(L).
 
 rectangles([],[],[],[]).
 rectangles([S|Sides], [X|RowVars], [Y|ColVars], [Rect|L]):-
-    Rect = f(X, S, Y, S),
+    Rect = f(X, S, Y, S), % f(X_i, W_i, Y_i, H_i)
     rectangles(Sides, RowVars, ColVars, L ).
+
+
+% SOL GITHUB (MAS ineficiente!!)
+/* % Agafa cada quadrat i l'envia a comprovar que no té solapaments.        
+nonoverlapping(_, [], [], []).        
+nonoverlapping(_, [Side|Sides], [RowCoord|RowVars], [ColCoord|ColVars]):-
+        neverOverlap(Side, Sides, RowCoord, RowVars, ColCoord, ColVars),
+        nonoverlapping(_, Sides, RowVars, ColVars).
+
+% Per un quadrat comprova si es solapa amb tots els altres.        
+neverOverlap(_, [], _, [], _, []).
+neverOverlap(Side1, [Side2|Sides], Row1, [Row2|RowVars], Col1, [Col2|ColVars]):-
+        nonOverLapping2squares(Side1, Side2, Row1, Row2, Col1, Col2),
+        neverOverlap(Side1, Sides, Row1, RowVars, Col1, ColVars).
+
+% Per cada dos quadrats, comprova que no es solapin entre ells.        
+nonOverLapping2squares(Side1, Side2, Row1, Row2, Col1, Col2):-
+        Row1 + Side1 #=< Row2;
+        Col1 + Side1 #=< Col2;
+        Row2 + Side2 #=< Row1;
+        Col2 + Side2 #=< Col1.
+ */
+% FI SOL GITHUB
 
 
 %DISPLAY

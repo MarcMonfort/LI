@@ -25,11 +25,12 @@ no */
 programa(P):- append([begin|Is],[end],P), instrucciones(Is).
 
 instrucciones(Is):- instruccion(Is).
-instrucciones(Is):- append(I,[;|Is2],Is), instruccion(I), instrucciones(Is2).
+%instrucciones(Is):- append(I,[;|Is2],Is), instruccion(I), instrucciones(Is2).
+instrucciones(Is):- append( [I, [;], Is2] ,Is), instruccion(I), instrucciones(Is2). % con append/2
 
 instruccion([V1,=,V2,+,V3]):- variable(V1), variable(V2), variable(V3).
 instruccion( I ):- 
-    append([if|II],[endif], I),
+    append([if|II],[endif], I), % append( [[if], II, [endif] ], I)  "el mateix amb append/2"
     append([V1,=,V2,then|Is1], [else|Is2], II),
     variable(V1), variable(V2), 
     instrucciones(Is1), instrucciones(Is2).
@@ -38,3 +39,6 @@ instruccion( I ):-
 variable(x).
 variable(y).
 variable(z).
+
+
+% usar append([ [1], [2,3] ], L)

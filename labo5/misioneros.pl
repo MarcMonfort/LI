@@ -17,7 +17,7 @@ noDead([[Ma,Ca],[Mb,_]]):-
 
 %%%%
 
-%De A a B
+%De A a B (yendo)
 unPaso([[Ma,Ca],[Mb,Cb],0], [[Ma2,Ca2],[Mb2,Cb2],1] ):-
     between(0,Ma,X),
     between(0,Ca,Y),
@@ -33,19 +33,19 @@ unPaso([[Ma,Ca],[Mb,Cb],0], [[Ma2,Ca2],[Mb2,Cb2],1] ):-
 
     noDead([[Ma2,Ca2],[Mb2,Cb2]]).
 
-%De B a A
+%De B a A (volviendo)
 unPaso([[Ma,Ca],[Mb,Cb],1], [[Ma2,Ca2],[Mb2,Cb2],0] ):-
     between(0,Mb,X),
     between(0,Cb,Y),
 
-    2 >= X+Y,
-    1 =< X+Y,
+    2 >= X+Y,   % maximo de ocupantes canoa
+    1 =< X+Y,   % minimo de ocupantes canoa
 
-    Ma2 is Ma+X,
-    Ca2 is Ca+Y,
+    Ma2 is Ma+X,    % aumentar misioneros en A (han vuelto)
+    Ca2 is Ca+Y,    % aumentar canibales en A (han vuelto)
 
-    Mb2 is Mb-X,
-    Cb2 is Cb-Y,
+    Mb2 is Mb-X,    % disminuir misioneros en B (se han ido)
+    Cb2 is Cb-Y,    % disminuir canibales en B (se han ido)
 
     noDead([[Ma2,Ca2],[Mb2,Cb2]]).
 

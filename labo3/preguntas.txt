@@ -1,4 +1,0 @@
-Problema1
-    error al no tener la clausula (ej. nocasa(E,J))
-    tarda mucho noTripeticiones()
-    con 4 equipos peta noTripeticiones si es para todas las jornadas, no solo la primera vuelta

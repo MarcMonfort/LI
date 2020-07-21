@@ -18,6 +18,7 @@
 %	 0                         
 %	
 
+
 :- use_module(library(clpfd)).
 
 ejemplo1( [0,0,8,2,6,4,5,3,7,0,0], [0,0,7,1,6,3,4,5,2,7,0,0] ).
@@ -26,19 +27,24 @@ ejemplo3( [11,5,4], [3,2,3,1,1,1,1,2,3,2,1] ).
 
 
 p:-	ejemplo1(RowSums,ColSums),
+	% 1. vars + Domains
+	% 1a. vars
 	length(RowSums,NumRows),
 	length(ColSums,NumCols),
 	NVars is NumRows*NumCols,
 	listVars(NVars,L),  % generate a list of Prolog vars (their names do not matter)
-	
+	% 1b. domains
 	L ins 0..1,
-
-	matrixByRows(L, NumCols, MatrixByRows),
+	% 2. Constraints
+	matrixByRows(L, NumCols, MatrixByRows),	% [[A,B,C], [D,E,F], [G,H,I]]
 	transpose(MatrixByRows, MatrixByCols),
 
 	declareConstraints(MatrixByRows, RowSums),
 	declareConstraints(MatrixByCols, ColSums),
 
+	% 3. Label
+	label(L),
+	% 4. write
 	pretty_print(RowSums,ColSums,MatrixByRows).
 
 

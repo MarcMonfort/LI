@@ -9,11 +9,8 @@
 
 % Five passengers. The first one has origin [813,136] and destination [133,888], etc. :
 example(5, [ [[813,136],[133,888]], [[942,399],[600,89]], [[532,241],[55,55]], [[498,276],[553,528]], [[531,911],[430,545]] ]). %optimal: 3981.30 km.
-
 example(8,[[[839,731],[925,300]],[[888,309],[381,637]],[[423,608],[576,715]],[[703,709],[397,645]],[[353,442],[397,620]],[[34,945],[401,465]],[[885,319],[750,888]],[[313,357],[266,749]]]). % optimal: 3889.06 km.
-
 example(10,[[[781,230],[204,491]],[[424,252],[634,768]],[[940,26],[487,833]],[[297,976],[478,536]],[[953,998],[224,261]],[[287,81],[189,192]],[[716,325],[236,667]],[[735,683],[876,967]],[[394,749],[533,52]],[[144,620],[558,470]]]). % al cabo de unos minutos baja a 6214.37 km pero no sabemos si es óptimo
-
 example(12,[[[264,384],[549,238]],[[747,908],[887,67]],[[431,918],[636,13]],[[20,455],[658,892]],[[136,976],[893,570]],[[677,750],[632,434]],[[998,960],[390,169]],[[740,110],[808,811]],[[581,198],[875,245]],[[768,27],[639,556]],[[736,381],[1000,631]],[[93,222],[155,301]]]). % baja de 9200 km, pero no sabemos
 
 helicopterBasePoint([254,372]).
@@ -45,18 +42,18 @@ heli( [], AccumulatedDistance, [CurrentPoint|RouteSoFar], [] ):- %...
 
 % Pick up another passenger:
 heli( PassengersToPickUp, AccumulatedDistance, [CurrentPoint|RouteSoFar], DestinationsOfPassengersInHelicopter ):- %...
-    length(DestinationsOfPassengersInHelicopter,N), N =< 2,
-    select( [S,F], PassengersToPickUp, RemainingPassengers ),
-    distanceBetweenTwoPoints( CurrentPoint, S, D ),
-    NewAccumulatedDistance is AccumulatedDistance + D,
+    length(DestinationsOfPassengersInHelicopter,N), N =< 2,     % el helicoptero no esta lleno
+    select( [S,F], PassengersToPickUp, RemainingPassengers ),   % cojo un pasajero de los que quedan
+    distanceBetweenTwoPoints( CurrentPoint, S, D ),             % calculo las distancia desde donde estoy, hasta el pasajero
+    NewAccumulatedDistance is AccumulatedDistance + D,          % aumento esa distancia a la distancia total
     heli( RemainingPassengers, NewAccumulatedDistance, [S, CurrentPoint | RouteSoFar], [F | DestinationsOfPassengersInHelicopter]  ).
 
 % Drop off one of the passengers in the helicopter:
 heli( PassengersToPickUp, AccumulatedDistance, [CurrentPoint|RouteSoFar], DestinationsOfPassengersInHelicopter ):- %...
     length(DestinationsOfPassengersInHelicopter,N), N =< 2,
-    select( F, DestinationsOfPassengersInHelicopter, RemainingDestinations ),
-    distanceBetweenTwoPoints( CurrentPoint, F, D ),
-    NewAccumulatedDistance is AccumulatedDistance + D,
+    select( F, DestinationsOfPassengersInHelicopter, RemainingDestinations ),   % escojo un destino de uno de los pasajeros
+    distanceBetweenTwoPoints( CurrentPoint, F, D ),                             % caclulo las distancia a ese destino
+    NewAccumulatedDistance is AccumulatedDistance + D,                          % aumento la distancia total
     heli( PassengersToPickUp, NewAccumulatedDistance, [F, CurrentPoint | RouteSoFar], RemainingDestinations  ).
 
 
